@@ -17,6 +17,7 @@ package org.gwtproject.core.client;
 
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Window;
+import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
@@ -58,11 +59,10 @@ public final class GWT {
   public static void reportUncaughtException(Throwable e) {
     // throw an exception "later" so that it ends up handled by the global
     // error handler. Same code as in GWT2's Impl.reportToBrowser()
-    DomGlobal.setTimeout(
-        ignore -> {
-          throw_(e);
-        },
-        0);
+    setTimeout(
+        () -> {
+          throw e;
+        });
   }
 
   /**
@@ -160,8 +160,13 @@ public final class GWT {
     static Window window;
   }
 
-  @JsMethod(namespace = "<window>", name = "throw")
-  private static native void throw_(Object object);
+  @JsFunction
+  private interface Throwing {
+    void run() throws Throwable;
+  }
+
+  @JsMethod(namespace = "<window>", name = "setTimeout")
+  private static native void setTimeout(Throwing throwingFunction);
 
   public static boolean isClient() {
     return org.gwtproject.core.shared.GWT.isClient();
