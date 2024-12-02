@@ -45,7 +45,7 @@ public class GWTTest extends GWTTestCase {
     DomGlobal.setTimeout(
         (ignore) -> {
           assertEquals(1, caught.size());
-          assertEquals("java.lang.JsException", caught.get(0).getClass().getName());
+          assertEquals("java.lang.RuntimeException", caught.get(0).getClass().getName());
           finishTest();
         },
         1000);
