@@ -152,7 +152,7 @@ public final class GWT {
   @JsMethod
   private static native Throwable fromObject(Object obj) /*-{
     //GWT2 impl using JSNI, see GWT.native.js for the j2cl impl
-    var throwable = @java.lang.Throwable::of(*)(obj);
+    return @java.lang.Throwable::of(*)(obj);
   }-*/;
 
   @JsType(isNative = true, name = "window", namespace = "<window>")
