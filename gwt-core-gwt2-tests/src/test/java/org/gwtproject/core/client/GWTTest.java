@@ -16,8 +16,14 @@
 package org.gwtproject.core.client;
 
 import com.google.gwt.junit.client.GWTTestCase;
+import elemental2.dom.DomGlobal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GWTTest extends GWTTestCase {
+
+  private List<Throwable> caught = new ArrayList<>();
+
   @Override
   public String getModuleName() {
     return "org.gwtproject.core.Core";
@@ -31,5 +37,23 @@ public class GWTTest extends GWTTestCase {
   public void testIsClient() {
     assertTrue(GWT.isClient());
     assertTrue(org.gwtproject.core.shared.GWT.isClient());
+  }
+
+  public void testReportUncaughtError() {
+    GWT.setUncaughtExceptionHandler(caught::add);
+    GWT.reportUncaughtException(new RuntimeException());
+    DomGlobal.setTimeout(
+        (ignore) -> {
+          assertEquals(1, caught.size());
+          assertEquals("java.lang.JsException", caught.get(0).getClass().getName());
+          finishTest();
+        },
+        1000);
+    delayTestFinish(3000);
+  }
+
+  @Override
+  public boolean catchExceptions() {
+    return false;
   }
 }
